@@ -357,7 +357,7 @@ namespace AttendanceSystem.Manager
 
             if (selectUser.Course != null && selectUser.UserType == UserType.Teacher)
             {
-        
+
                 var attendances = dbContext.Attendances.Where(x => x.Course == selectUser.Course).Include(s => s.Student).ToList();
                 if (attendances.Count > 0)
                 {
