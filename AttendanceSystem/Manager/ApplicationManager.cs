@@ -346,7 +346,6 @@ namespace AttendanceSystem.Manager
             else { AppHelper.InvalidInfo("Info! You aren't enrolled in course."); }
         }
 
-
         public void CheckStudentAttendance()
         {
             var selectUser = dbContext.Users
@@ -359,58 +358,6 @@ namespace AttendanceSystem.Manager
             if (selectUser.Course != null && selectUser.UserType == UserType.Teacher)
             {
         
-                var students = dbContext.Users.Where(x => x.Course == selectUser.Course && x.UserType == UserType.Student).ToList();
-                var attendees = dbContext.Attendances.Where(x => x.Course == selectUser.Course).ToList();
-
-                var studentList = (from s in students
-                                 join a in attendees on s.Course.Id equals a.Course.Id
-                                 where s.Course.Id == selectUser.Course.Id orderby a.PresentDate descending
-                                 select s).ToList();
-
-                if (studentList.Count() > 0)
-                {
-                    AppHelper.MessageInfo("\nClass-Date\tStudent-Name\tPresent?");
-                    foreach (var item in studentList.DistinctBy(x=>x.UserName))
-                    {
-                        DateTime dateTime = DateTime.Now.Date;
-                        if (item.Attendances != null)
-                        {
-                            var presents = item.Attendances.ToList();
-                            foreach (var p in presents)
-                            {
-                                dateTime = p.PresentDate;
-                                Console.Write($"{p.PresentDate:d}\t {p.Student.Name}");
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("\t  √"); Console.ResetColor();
-                            }
-                        }
-                        else
-                        {
-                            var absents = studentList.Where(x=>x.Attendances == null).ToList();
-                            foreach (var a in absents.DistinctBy(x=>x.UserName))
-                            {
-                                Console.Write($"{dateTime:d}\t {a.Name}");
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("\t  A"); Console.ResetColor();
-                            }
-                        }
-
-                        //Console.WriteLine($"{item.PresentDate:d} \t {item.Student.Name} \t {(item.IsPresent ? present: absent)}");
-                    }
-                }
-                else { AppHelper.MessageInfo("Student Attendance Not Found."); }
-
-
-                /*
-                StringBuilder print = new StringBuilder();
-                print.AppendLine("\nClass Date\tStudent Name\tPresent?");
-                foreach (var item in attendances)
-                {
-                    print.AppendLine($"{item.PresentDate:d} \t {item.Student.Name} \t {(item.IsPresent ? '√' : 'A')}");
-                }
-                Console.WriteLine(print);
-                */
-
                 var attendances = dbContext.Attendances.Where(x => x.Course == selectUser.Course).Include(s => s.Student).ToList();
                 if (attendances.Count > 0)
                 {
