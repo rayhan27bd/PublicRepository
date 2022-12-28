@@ -14,7 +14,6 @@ namespace AttendanceSystem.Entities
         public DateTime RegisterDate { get; set; }
         public Course? Course { get; set; }
         public string? EnrollmentDate { get; set; }
-        //public ICollection<Attendance> Attendances { get; set; }
 
         public EntityUser(UserType userType)
             : this (string.Empty, string.Empty, string.Empty, userType)
