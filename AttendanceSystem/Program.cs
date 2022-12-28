@@ -56,9 +56,9 @@ public class Program
             }
         }
         // Task :: 08
-        if (userType == UserType.Student) { appManager.TakeStudentAttendance(); }
+        if (userType == UserType.Student) { appManager.GetStudentAttendance(); }
         // Task :: 09
-        if (userType == UserType.Teacher) { appManager.CheckStudentAttendance(); }
+        if (userType == UserType.Teacher) { appManager.SetStudentAttendance(); }
 
     }
 }

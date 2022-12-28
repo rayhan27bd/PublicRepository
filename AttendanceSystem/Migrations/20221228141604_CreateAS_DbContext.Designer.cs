@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AttendanceSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221227072441_CreateAS_DbContext2")]
-    partial class CreateAS_DbContext2
+    [Migration("20221228141604_CreateAS_DbContext")]
+    partial class CreateAS_DbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.11")
+                .HasAnnotation("ProductVersion", "6.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -32,7 +32,15 @@ namespace AttendanceSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<string>("ClassDayTime")
+                    b.Property<DateTime>("ClassDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ClassStartEndTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClassWeekOfDay")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("CourseId")
@@ -41,7 +49,7 @@ namespace AttendanceSystem.Migrations
                     b.Property<bool>("IsPresent")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("PresentDate")
+                    b.Property<DateTime?>("PresentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<long>("StudentId")
@@ -151,7 +159,7 @@ namespace AttendanceSystem.Migrations
                         .IsRequired();
 
                     b.HasOne("AttendanceSystem.Entities.EntityUser", "Student")
-                        .WithMany("Attendances")
+                        .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -168,11 +176,6 @@ namespace AttendanceSystem.Migrations
                         .HasForeignKey("CourseId");
 
                     b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("AttendanceSystem.Entities.EntityUser", b =>
-                {
-                    b.Navigation("Attendances");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,7 +12,7 @@ namespace AttendanceSystem
 
         public ApplicationDbContext()
         {
-            _connectionString = "Server=.\\SQLEXPRESS; Database=AttendanceSystemEF; Integrated Security=true; Trusted_Connection=True;";
+            _connectionString = "Server=.\\SQLEXPRESS; Database=AttendanceSystem; Integrated Security=true; Trusted_Connection=True;";
             migrationsAssembly = Assembly.GetExecutingAssembly().GetName().Name;
         }
 
