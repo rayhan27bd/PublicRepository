@@ -44,6 +44,9 @@ namespace AttendanceSystem.Migrations
                     b.Property<long>("CourseId")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsPresent")
                         .HasColumnType("bit");
 
@@ -89,13 +92,14 @@ namespace AttendanceSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("CreationDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasSchedule")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TotalClasses")
+                    b.Property<int>("TotalClass")
                         .HasColumnType("int");
 
                     b.Property<string>("Weekly1stClassDay")

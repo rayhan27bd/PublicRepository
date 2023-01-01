@@ -11,6 +11,7 @@ namespace AttendanceSystem.Entities
         public uint Id { get; set; }
         public EntityUser Student { get; set; }
         public Course Course { get; set; }
+        public DateTime CreationDate { get; set; }
         public DateTime ClassDate { get; set; }
         public string ClassWeekOfDay { get; set; }
         public string ClassStartEndTime { get; set; }

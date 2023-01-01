@@ -2,8 +2,6 @@
 using AttendanceSystem.Utility;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Linq;
 
 namespace AttendanceSystem.Manager
 {
@@ -26,13 +24,13 @@ namespace AttendanceSystem.Manager
 
         public UserType UserLogin()
         {
-            LoginAgain:
+        LoginAgain:
             _userName = AppHelper.SetUserName();
             _password = AppHelper.SetPassword();
 
-            var isUser = dbContext.Users.SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
-            if (isUser != null)
-                _userType = isUser.UserType;
+            var loginUser = dbContext.Users.SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
+            if (loginUser != null)
+                _userType = loginUser.UserType;
             else
             {
                 AppHelper.InvalidInfo("Invalid! Username or Password.\n");
@@ -44,7 +42,7 @@ namespace AttendanceSystem.Manager
 
         public void CreateUserOrCourse()
         {
-            RedirectToUser:
+        RedirectToUser:
             try
             {
                 Console.Write("\nCreate:\n ");
@@ -57,12 +55,16 @@ namespace AttendanceSystem.Manager
                 goto RedirectToUser;
             }
 
-            if (_userChoice == 1)
+            if (_userChoice == 0)
+            {
+                new Program();
+            }
+            else if (_userChoice == 1)
             {
                 Console.Write("\nTeacher ");
                 _name = AppHelper.SetName();
 
-                RedirectToTeacher:
+            RedirectToTeacher:
                 _userName = AppHelper.SetUserName();
                 var isExist = dbContext.Users.Any(u => u.UserName == _userName);
                 if (isExist)
@@ -94,7 +96,7 @@ namespace AttendanceSystem.Manager
                 Console.Write("\nStudent ");
                 _name = AppHelper.SetName();
 
-                RedirectToStudent:
+            RedirectToStudent:
                 _userName = AppHelper.SetUserName();
                 var isExist = dbContext.Users.Any(x => x.UserName == _userName);
                 if (isExist)
@@ -123,7 +125,7 @@ namespace AttendanceSystem.Manager
             }
             else if (_userChoice == 3)
             {
-                RedirectToCourse:
+            RedirectToCourse:
                 var course = new Course();
                 Console.Write("\nCourse ");
                 course.CourseName = AppHelper.SetName();
@@ -136,7 +138,7 @@ namespace AttendanceSystem.Manager
                 else
                 {
                     course.CourseFees = AppHelper.SetFees();
-                    course.CreationDate = DateTime.Now;
+                    course.CreationDate = DateTime.Now.ToString("G");
                     try
                     {
                         dbContext.Courses.Add(course);
@@ -157,7 +159,7 @@ namespace AttendanceSystem.Manager
                 Console.Write("\nAdmin ");
                 _name = AppHelper.SetName();
 
-                RedirectToAdmin:
+            RedirectToAdmin:
                 _userName = AppHelper.SetUserName();
                 var adminExist = dbContext.Users.Any(x => x.UserName == _userName);
                 if (adminExist)
@@ -193,17 +195,15 @@ namespace AttendanceSystem.Manager
 
         public void SettingClassSchedule()
         {
-            StartAgain:
+        StartAgain:
             Console.WriteLine("\nCourse List=>");
             List<Course> courses = dbContext.Courses.ToList();
             if (courses.Count > 0)
                 foreach (var c in courses)
-                    Console.WriteLine($"Id: {c.Id}  Name: {c.CourseName}");
+                    Console.WriteLine($"Course Title: {c.CourseName}");
             else
             {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("No Course Found, Please add a Course.");
-                Console.ResetColor();
+                AppHelper.MessageInfo("No Course Found, Please add a Course.");
                 CreateUserOrCourse(); goto StartAgain;
             }
 
@@ -212,7 +212,7 @@ namespace AttendanceSystem.Manager
             var selectCourse = courses.FirstOrDefault(x => x.CourseName == courseName);
             if (selectCourse != null)
             {
-                SetScheduleAgain:
+            SetScheduleAgain:
                 try
                 {
                     Console.Write("Weekly 1st Day: ");
@@ -236,7 +236,7 @@ namespace AttendanceSystem.Manager
 
 
                     Console.Write("Total Classes: ");
-                    selectCourse.TotalClasses = ushort.Parse(Console.ReadLine());
+                    selectCourse.TotalClass = ushort.Parse(Console.ReadLine());
                     selectCourse.HasSchedule = Convert.ToBoolean(bool.TrueString);
                     dbContext.Courses.Update(selectCourse);  // UpdateDataToDbRow
                 }
@@ -246,15 +246,12 @@ namespace AttendanceSystem.Manager
             _rowAffected = dbContext.SaveChanges();
             if (_rowAffected > 0)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Success! Class Schedule for Course.");
-                Console.ResetColor();
+                AppHelper.SuccessInfo("Success! Class Schedule for Course.");
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Failure! Class Schedule for Course.");
-                Console.ResetColor(); goto StartAgain;
+                AppHelper.FailureInfo("Failure! Class Schedule for Course.");
+                goto StartAgain;
             }
         }
 
@@ -262,7 +259,7 @@ namespace AttendanceSystem.Manager
         {
 
             var loginUser = dbContext.Users
-                .Where(s => s.UserName == _userName && s.Password == _password).Include(s => s.Course).SingleOrDefault();
+                .Where(t => t.UserName == _userName && t.Password == _password).Include(s => s.Course).SingleOrDefault();
 
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
@@ -291,12 +288,13 @@ namespace AttendanceSystem.Manager
                     {
 
                         var attendee = dbContext.Attendances
-                            .Where(x => x.Student == loginUser && x.ClassDate.Date == DateTime.Now.Date).SingleOrDefault();
+                            .Where(x => x.Student == loginUser && x.Course == loginUser.Course && x.ClassDate == DateTime.Now.Date)
+                            .SingleOrDefault();
 
-                        if (attendee != null && loginUser.Course == attendee.Course)
+                        if (attendee != null)
                         {
 
-                            TakeAttendance:
+                        TakeAttendance:
                             Console.Write($"\nDo you want to given attendance?? \n[Y/N]: ");
                             ConsoleKey yesOrNo = Console.ReadKey().Key; Console.Write("\n");
 
@@ -322,7 +320,7 @@ namespace AttendanceSystem.Manager
                                 AppHelper.MessageInfo("Info! You already given attendance today.");
                             }
                         }
-                        else { AppHelper.InvalidInfo("Info! Attendance schedule not set yet."); }
+                        else { AppHelper.InvalidInfo("Teacher attendance schedule not set yet."); }
                     }
                     else { AppHelper.InvalidInfo($"Info! Class time is not start yet."); }
                 }
@@ -335,27 +333,38 @@ namespace AttendanceSystem.Manager
         {
 
             var loginUser = dbContext.Users
-                .Where(s => s.UserName == _userName && s.Password == _password).Include(s => s.Course).SingleOrDefault();
+                .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
             Console.WriteLine($"Course Title: {((loginUser.Course != null) ? loginUser.Course.CourseName : "N/A")}");
+
 
             if (loginUser.Course != null && loginUser.UserType == UserType.Teacher)
             {
 
                 if (loginUser.Course.HasSchedule == true)
                 {
-                    var students = dbContext.Users
+
+                    Console.WriteLine($"Class Schedule: " +
+                        $"{loginUser.Course.Weekly1stClassDay} ({loginUser.Course.ClassStartTime1} - {loginUser.Course.ClassEndedTime1}), " +
+                        $"{loginUser.Course.Weekly2ndClassDay} ({loginUser.Course.ClassStartTime2} - {loginUser.Course.ClassEndedTime2})");
+
+
+                    List<EntityUser> students = dbContext.Users
                         .Where(x => x.Course == loginUser.Course && x.UserType == UserType.Student).ToList();
 
                     foreach (var student in students)
                     {
 
-                        var isSchedule = dbContext.Attendances.
-                            Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
+                        var isSchedule = dbContext.Attendances
+                            .Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
 
-                        if (isSchedule == false)
+                        bool _1stClassDay = student.Course.Weekly1stClassDay == DateTime.Now.DayOfWeek.ToString();
+                        bool _2ndClassDay = student.Course.Weekly2ndClassDay == Convert.ToString(DateTime.Now.DayOfWeek);
+
+                        if (isSchedule != true && (_1stClassDay | _2ndClassDay))
                         {
+
                             var setSchedule = new Attendance() { Student = student, Course = student.Course };
 
                             bool _1stClassDayTime = student.Course.Weekly1stClassDay == Convert.ToString(DateTime.Now.DayOfWeek) &
@@ -377,6 +386,7 @@ namespace AttendanceSystem.Manager
                                 setSchedule.ClassStartEndTime = $"{student.Course.ClassStartTime2} - {Convert.ToDateTime(student.Course.ClassEndedTime2):t}";
                             }
 
+                            setSchedule.CreationDate = DateTime.Now;
                             setSchedule.ClassDate = DateTime.Now.Date;
                             dbContext.Attendances.Add(setSchedule);
                             _rowAffected = dbContext.SaveChanges();
@@ -414,10 +424,69 @@ namespace AttendanceSystem.Manager
             else { AppHelper.InvalidInfo("Info! You aren't assigned in course."); }
         }
 
+        public void ViewAttendanceOfCourses()
+        {
+
+            var loginUser = dbContext.Users
+                .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
+
+
+            Console.WriteLine("\nCourse List=>");
+            List<Course> courses = null;
+            if (loginUser.Course == null)
+                courses = dbContext.Courses.ToList();
+            else
+                courses = dbContext.Courses.Where(u => u.CourseName != loginUser.Course.CourseName).ToList();
+
+
+            if (courses.Count > 0)
+            {
+                foreach (var c in courses)
+                    Console.WriteLine($"Course Title: {c.CourseName}");
+            }
+            else { AppHelper.MessageInfo("No Course Found, Please add a Course."); }
+
+
+        SelectCourseAgain:
+            Console.Write("Select Course: "); var courseName = Console.ReadLine();
+            var selectCourse = courses.FirstOrDefault(x => x.CourseName == courseName);
+            if (selectCourse != null)
+            {
+                List<Attendance> attendances = dbContext.Attendances
+                    .Where(x => x.Course == selectCourse).Include(s => s.Student).ToList();
+
+                if (attendances.Count > 0)
+                {
+                    AppHelper.MessageInfo("\nClass-Date\tStudent-Name\tPresent?");
+                    foreach (var item in attendances)
+                    {
+                        if (item.IsPresent)
+                        {
+                            Console.Write($"{item.ClassDate:d}\t {item.Student.Name}");
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("\t   √"); Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.Write($"{item.ClassDate:d}\t {item.Student.Name}");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\t   A"); Console.ResetColor();
+                        }
+                    }
+                }
+                else { AppHelper.MessageInfo("Info! Student Attendance Not Found."); }
+            }
+            else
+            {
+                AppHelper.InvalidInfo("Info! Selected Course isn't Correct.\n");
+                goto SelectCourseAgain;
+            }
+        }
+
         public void AssignOrEnrollCourse(byte selectedUser)
         {
 
-            AfterCreateNewCourse:
+        AfterCreateNewCourse:
             Console.WriteLine("\nCourse List=> ");
             List<Course> courses = dbContext.Courses.ToList();
             if (courses.Count > 0)
@@ -431,11 +500,12 @@ namespace AttendanceSystem.Manager
                 CreateUserOrCourse(); goto AfterCreateNewCourse;
             }
 
-            SelectUserAndCourse:
+        SelectUserAndCourse:
             var user = new EntityUser(_userType);
+
             if (selectedUser == 2)
             {
-                SelectTeacherAgain:
+            SelectTeacherAgain:
                 Console.WriteLine("\nTeacher List=>");
                 List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == UserType.Teacher && t.Course == null).ToList();
 
@@ -458,7 +528,7 @@ namespace AttendanceSystem.Manager
 
             if (selectedUser == 3)
             {
-                SelectStudentAgain:
+            SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
                 List<EntityUser> students = dbContext.Users.Where(s => s.UserType == UserType.Student && s.Course == null).ToList();
 
@@ -481,7 +551,7 @@ namespace AttendanceSystem.Manager
 
             if (user != null && user.UserName == _userName)
             {
-                SelectCourseAgain:
+            SelectCourseAgain:
                 Console.Write("Enter Course");
                 var userCourse = AppHelper.SetName();
                 var selectCourse = courses.FirstOrDefault(x => x.CourseName == userCourse);
