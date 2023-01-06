@@ -500,7 +500,7 @@ namespace AttendanceSystem.Manager
                 CreateUserOrCourse(); goto AfterCreateNewCourse;
             }
 
-        SelectUserAndCourse:
+            SelectUserAndCourse:
             var user = new EntityUser(_userType);
 
             if (selectedUser == 2)
