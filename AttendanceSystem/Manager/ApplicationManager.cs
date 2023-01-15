@@ -483,7 +483,7 @@ namespace AttendanceSystem.Manager
             }
         }
 
-        public void AssignOrEnrollCourse(byte UserType)
+        public void AssignOrEnrollCourse(byte userType)
         {
 
             AfterCreateNewCourse:
@@ -503,11 +503,11 @@ namespace AttendanceSystem.Manager
             SelectUserAndCourse:
             var user = new EntityUser(_userType);
 
-            if (UserType == 2)
+            if (userType == 2)
             {
                 SelectTeacherAgain:
                 Console.WriteLine("\nTeacher List=>");
-                List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == UserType.Teacher && t.Course == null).ToList();
+                List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == userType.Teacher && t.Course == null).ToList();
 
                 if (teachers.Count > 0)
                 {
@@ -526,11 +526,11 @@ namespace AttendanceSystem.Manager
             }
 
 
-            if (UserType == 3)
+            if (userType == 3)
             {
                 SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
-                List<EntityUser> students = dbContext.Users.Where(s => s.UserType == UserType.Student && s.Course == null).ToList();
+                List<EntityUser> students = dbContext.Users.Where(s => s.UserType == userType.Student && s.Course == null).ToList();
 
                 if (students.Count > 0)
                 {
