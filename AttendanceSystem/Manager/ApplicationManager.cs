@@ -483,7 +483,7 @@ namespace AttendanceSystem.Manager
             }
         }
 
-        public void AssignOrEnrollCourse(byte selectedUser)
+        public void AssignOrEnrollCourse(byte UserType)
         {
 
             AfterCreateNewCourse:
@@ -503,7 +503,7 @@ namespace AttendanceSystem.Manager
             SelectUserAndCourse:
             var user = new EntityUser(_userType);
 
-            if (selectedUser == 2)
+            if (UserType == 2)
             {
                 SelectTeacherAgain:
                 Console.WriteLine("\nTeacher List=>");
@@ -526,7 +526,7 @@ namespace AttendanceSystem.Manager
             }
 
 
-            if (selectedUser == 3)
+            if (UserType == 3)
             {
                 SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
@@ -569,10 +569,10 @@ namespace AttendanceSystem.Manager
                 }
 
                 if (_rowAffected > 0)
-                    AppHelper.SuccessInfo($"Success! {user.UserType} {((user.UserType == UserType.Teacher) ? "Assigned" : "Enrolled")} Course.");
+                    AppHelper.SuccessInfo($"Success! {user.UserType} {((user.UserType == Entities.UserType.Teacher) ? "Assigned" : "Enrolled")} Course.");
                 else
                 {
-                    AppHelper.FailureInfo($"Failure! To {user.UserType} {((user.UserType == UserType.Teacher) ? "Assign" : "Enroll")} Course.");
+                    AppHelper.FailureInfo($"Failure! To {user.UserType} {((user.UserType == Entities.UserType.Teacher) ? "Assign" : "Enroll")} Course.");
                     Console.WriteLine(); goto SelectCourseAgain;
                 }
             }
