@@ -7,6 +7,7 @@ namespace AttendanceSystem.Manager
 {
     public class ApplicationManager
     {
+
         private static string _name;
         private static byte _userChoice;
         private static string _userName;
@@ -359,10 +360,15 @@ namespace AttendanceSystem.Manager
                         var isSchedule = dbContext.Attendances
                             .Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
 
-                        bool _1stClassDay = student.Course.Weekly1stClassDay == DateTime.Now.DayOfWeek.ToString();
-                        bool _2ndClassDay = student.Course.Weekly2ndClassDay == Convert.ToString(DateTime.Now.DayOfWeek);
 
-                        if (isSchedule != true && (_1stClassDay | _2ndClassDay))
+                        bool _1stClassDayEndTime = ((student.Course.Weekly1stClassDay == DateTime.Now.DayOfWeek.ToString())
+                            && (Convert.ToDateTime(student.Course.ClassEndedTime1) >= Convert.ToDateTime(DateTime.Now.ToString("t"))));
+
+                        bool _2ndClassDayEndTime = ((student.Course.Weekly2ndClassDay == DateTime.Now.DayOfWeek.ToString())
+                            && (Convert.ToDateTime(student.Course.ClassEndedTime2) >= Convert.ToDateTime(DateTime.Now.ToString("t"))));
+
+
+                        if (isSchedule != true && (_1stClassDayEndTime | _2ndClassDayEndTime))
                         {
 
                             var setSchedule = new Attendance() { Student = student, Course = student.Course };
@@ -395,7 +401,6 @@ namespace AttendanceSystem.Manager
 
                     if (_rowAffected > 0)
                         AppHelper.SuccessInfo("Success! Attendance schedule setting.");
-
 
                     var attendances = dbContext.Attendances.Where(x => x.Course == loginUser.Course).Include(s => s.Student).ToList();
                     if (attendances.Count > 0)
@@ -507,7 +512,7 @@ namespace AttendanceSystem.Manager
             {
                 SelectTeacherAgain:
                 Console.WriteLine("\nTeacher List=>");
-                List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == userType.Teacher && t.Course == null).ToList();
+                List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == UserType.Teacher && t.Course == null).ToList();
 
                 if (teachers.Count > 0)
                 {
@@ -525,12 +530,11 @@ namespace AttendanceSystem.Manager
                 }
             }
 
-
             if (userType == 3)
             {
                 SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
-                List<EntityUser> students = dbContext.Users.Where(s => s.UserType == userType.Student && s.Course == null).ToList();
+                List<EntityUser> students = dbContext.Users.Where(s => s.UserType == UserType.Student && s.Course == null).ToList();
 
                 if (students.Count > 0)
                 {
@@ -547,7 +551,6 @@ namespace AttendanceSystem.Manager
                     CreateUserOrCourse(); goto SelectStudentAgain;
                 }
             }
-
 
             if (user != null && user.UserName == _userName)
             {
@@ -569,14 +572,15 @@ namespace AttendanceSystem.Manager
                 }
 
                 if (_rowAffected > 0)
-                    AppHelper.SuccessInfo($"Success! {user.UserType} {((user.UserType == Entities.UserType.Teacher) ? "Assigned" : "Enrolled")} Course.");
+                    AppHelper.SuccessInfo($"Success! {user.UserType} {((user.UserType == UserType.Teacher) ? "Assigned" : "Enrolled")} Course.");
                 else
                 {
-                    AppHelper.FailureInfo($"Failure! To {user.UserType} {((user.UserType == Entities.UserType.Teacher) ? "Assign" : "Enroll")} Course.");
+                    AppHelper.FailureInfo($"Failure! To {user.UserType} {((user.UserType == UserType.Teacher) ? "Assign" : "Enroll")} Course.");
                     Console.WriteLine(); goto SelectCourseAgain;
                 }
             }
             else { AppHelper.InvalidInfo("Info! Selected Username isn't Correct."); goto SelectUserAndCourse; }
         }
+
     }
 }

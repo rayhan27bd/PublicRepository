@@ -16,7 +16,7 @@ public class Program
         if (userType == UserType.Admin)
         {
             StartAgain:
-            byte userChoice;
+            Byte userChoice;
             Console.WriteLine("\n1.Create User or Course??");
             Console.WriteLine("2.Assign Teacher Course??");
             Console.WriteLine("3.Enroll Student Course??");
@@ -59,14 +59,17 @@ public class Program
             }
         }
         // Task :: 08
-        if (userType == UserType.Student) { appManager.GetStudentAttendance(); }
+        if (userType == UserType.Student) 
+        { 
+            appManager.GetStudentAttendance(); 
+        }
         // Task :: 09
         if (userType == UserType.Teacher)
         {
             // view attendance assigned course
             appManager.SetStudentAttendance();
 
-            ViewAttendance: // view attendance another courses
+            ViewAttendance: // view attendance of another courses
             Console.Write("\nDo you want to view attendance another courses?? \n[Y/N]: ");
             ConsoleKey yesOrNo = Console.ReadKey().Key; Console.Write("\n");
             if (yesOrNo == ConsoleKey.Y) 
@@ -112,5 +115,7 @@ public class Program
             }
             */
         }
+
+        Console.ReadKey();  // Hold Display
     }
 }
