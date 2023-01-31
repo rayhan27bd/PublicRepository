@@ -361,17 +361,15 @@ namespace AttendanceSystem.Manager
                             .Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
 
 
-                        bool _1stClassDayEndTime = ((student.Course.Weekly1stClassDay == DateTime.Now.DayOfWeek.ToString())
-                            && (Convert.ToDateTime(student.Course.ClassEndedTime1) >= Convert.ToDateTime(DateTime.Now.ToString("t"))));
+                        bool _1stClassDayEndTime = (student.Course.Weekly1stClassDay == DateTime.Now.DayOfWeek.ToString())
+                            && (Convert.ToDateTime(student.Course.ClassEndedTime1) >= Convert.ToDateTime(DateTime.Now.ToString("t")));
 
-                        bool _2ndClassDayEndTime = ((student.Course.Weekly2ndClassDay == DateTime.Now.DayOfWeek.ToString())
-                            && (Convert.ToDateTime(student.Course.ClassEndedTime2) >= Convert.ToDateTime(DateTime.Now.ToString("t"))));
+                        bool _2ndClassDayEndTime = (student.Course.Weekly2ndClassDay == DateTime.Now.DayOfWeek.ToString())
+                            && (Convert.ToDateTime(student.Course.ClassEndedTime2) >= Convert.ToDateTime(DateTime.Now.ToString("t")));
 
 
-                        if (isSchedule != true && (_1stClassDayEndTime | _2ndClassDayEndTime))
+                        if (isSchedule == false && (_1stClassDayEndTime | _2ndClassDayEndTime))
                         {
-
-                            var setSchedule = new Attendance() { Student = student, Course = student.Course };
 
                             bool _1stClassDayTime = student.Course.Weekly1stClassDay == Convert.ToString(DateTime.Now.DayOfWeek) &
                                 Convert.ToDateTime(student.Course.ClassStartTime1) <= Convert.ToDateTime(DateTime.Now.ToString("t")) &
@@ -381,12 +379,14 @@ namespace AttendanceSystem.Manager
                                 Convert.ToDateTime(student.Course.ClassStartTime2) <= Convert.ToDateTime(DateTime.Now.ToString("t")) &
                                 Convert.ToDateTime(student.Course.ClassEndedTime2) >= Convert.ToDateTime(DateTime.Now.ToString("t"));
 
+
+                            var setSchedule = new Attendance() { Student = student, Course = student.Course };
                             if (_1stClassDayTime)
                             {
                                 setSchedule.ClassWeekOfDay = $"{student.Course.Weekly1stClassDay}";
                                 setSchedule.ClassStartEndTime = $"{student.Course.ClassStartTime1} - {Convert.ToDateTime(student.Course.ClassEndedTime1):t}";
                             }
-                            else
+                            if (_2ndClassDayTime)
                             {
                                 setSchedule.ClassWeekOfDay = $"{loginUser.Course.Weekly2ndClassDay}";
                                 setSchedule.ClassStartEndTime = $"{student.Course.ClassStartTime2} - {Convert.ToDateTime(student.Course.ClassEndedTime2):t}";
