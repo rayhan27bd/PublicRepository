@@ -58,11 +58,13 @@ public class Program
                     goto StartAgain;//break;
             }
         }
+
         // Task :: 08
         if (userType == UserType.Student) 
         { 
             appManager.GetStudentAttendance(); 
         }
+
         // Task :: 09
         if (userType == UserType.Teacher)
         {
@@ -81,6 +83,7 @@ public class Program
                 AppHelper.InvalidInfo("Invalid Attempt! Please try again..");
                 goto ViewAttendance;
             }
+
             /*
             GotoAgain:
             byte teacherChoice;
@@ -115,7 +118,5 @@ public class Program
             }
             */
         }
-
-        Console.ReadKey();  // Hold Display
     }
 }
