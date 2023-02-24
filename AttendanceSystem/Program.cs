@@ -1,5 +1,4 @@
-﻿// attendance system
-using AttendanceSystem.Manager;
+﻿using AttendanceSystem.Manager;
 using AttendanceSystem.Entities;
 using AttendanceSystem.Utility;
 
@@ -8,14 +7,14 @@ public class Program
     static void Main(string[] args)
     {
 
-        ApplicationManager appManager = new();
+        var appManager = new ApplicationManager();
         //appManager.CreateUserOrCourse();
         UserType userType = appManager.UserLogin();
 
         // Task :: 01 to 07
         if (userType == UserType.Admin)
         {
-            StartAgain:
+        StartAgain:
             Byte userChoice;
             Console.WriteLine("\n1.Create User or Course??");
             Console.WriteLine("2.Assign Teacher Course??");
@@ -60,9 +59,9 @@ public class Program
         }
 
         // Task :: 08
-        if (userType == UserType.Student) 
-        { 
-            appManager.GetStudentAttendance(); 
+        if (userType == UserType.Student)
+        {
+            appManager.GetStudentAttendance();
         }
 
         // Task :: 09
@@ -71,12 +70,12 @@ public class Program
             // view attendance assigned course
             appManager.SetStudentAttendance();
 
-            ViewAttendance: // view attendance of another courses
+        ViewAttendance: // view attendance of another courses
             Console.Write("\nDo you want to view attendance another courses?? \n[Y/N]: ");
             ConsoleKey yesOrNo = Console.ReadKey().Key; Console.Write("\n");
-            if (yesOrNo == ConsoleKey.Y) 
-            { 
-                appManager.ViewAttendanceOfCourses(); 
+            if (yesOrNo == ConsoleKey.Y)
+            {
+                appManager.ViewAttendanceOfCourses();
             }
             else if (yesOrNo != ConsoleKey.N)
             {
@@ -117,6 +116,9 @@ public class Program
                     goto GotoAgain;
             }
             */
+
         }
+
+        Console.ReadKey();  // Hold Display
     }
 }
