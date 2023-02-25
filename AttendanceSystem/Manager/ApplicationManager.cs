@@ -10,10 +10,10 @@ namespace AttendanceSystem.Manager
     {
 
         private static string _name;
-        private static byte _userChoice;
         private static string _userName;
         private static string _password;
         private static int _rowAffected;
+        private static sbyte _userChoice;
         private static UserType _userType;
         private readonly ApplicationDbContext _dbContext;
 
@@ -49,7 +49,7 @@ namespace AttendanceSystem.Manager
             {
                 Console.Write("\nCreate:\n ");
                 Console.Write("1.Teacher 2.Student 3.Course 4.Admin\nOption No.: ");
-                _userChoice = Convert.ToByte(Console.ReadLine());
+                _userChoice = Convert.ToSByte(Console.ReadLine());
             }
             catch (Exception ex)
             {
