@@ -519,7 +519,7 @@ namespace AttendanceSystem.Manager
                 }
                 else
                 {
-                    AppHelper.MessageInfo("No Unassign Teacher Found, Please add new Teacher.");
+                    AppHelper.MessageInfo("Unassign Teacher Not Found, Please Add New Teacher.");
                     CreateUserOrCourse(); goto SelectTeacherAgain;
                 }
             }
