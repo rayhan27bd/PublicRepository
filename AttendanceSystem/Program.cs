@@ -7,23 +7,23 @@ public class Program
     static void Main(string[] args)
     {
 
+        UserType userType;
         var appManager = new ApplicationManager();
         //appManager.CreateUserOrCourse();
-        UserType userType = appManager.UserLogin();
+        userType = appManager.UserLogin();
 
         // Task :: 01 to 07
         if (userType == UserType.Admin)
         {
-        StartAgain:
-            Byte userChoice;
-            Console.WriteLine("\n1.Create User or Course??");
-            Console.WriteLine("2.Assign Teacher Course??");
-            Console.WriteLine("3.Enroll Student Course??");
-            Console.Write("4.Layout Class Schedule??\nOption No.: ");
+            StartAgain:
+            byte userChoice;
+            Console.Write("\n1.Create User or Course??\n2.Assign Teacher Course??");
+            Console.Write("\n3.Enroll Student Course??\n4.Layout Class Schedule??");
+            Console.Write("\n0.Logout\nOption No.: ");
 
             try
             {
-                userChoice = Byte.Parse(Console.ReadLine());
+                userChoice = Convert.ToByte(Console.ReadLine());
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ public class Program
                     goto StartAgain;//break;
 
                 default:
-                    AppHelper.InvalidInfo("Invalid! Input Option No. Incorrect.");
+                    AppHelper.InvalidInfo("Invalid! Entered Option No. Incorrect.");
                     goto StartAgain;//break;
             }
         }
@@ -119,6 +119,5 @@ public class Program
 
         }
 
-        Console.ReadKey();  // Hold Display
     }
 }
