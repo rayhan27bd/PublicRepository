@@ -2,6 +2,7 @@
 using AttendanceSystem.Utility;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AttendanceSystem.Manager
 {
@@ -14,12 +15,12 @@ namespace AttendanceSystem.Manager
         private static string _password;
         private static int _rowAffected;
         private static UserType _userType;
-        private readonly ApplicationDbContext dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public ApplicationManager()
         {
             _userType = new UserType();
-            dbContext = new ApplicationDbContext();
+            _dbContext = new ApplicationDbContext();
         }
 
 
@@ -29,7 +30,7 @@ namespace AttendanceSystem.Manager
             _userName = AppHelper.SetUserName();
             _password = AppHelper.SetPassword();
 
-            var loginUser = dbContext.Users.SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
+            var loginUser = _dbContext.Users.SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
             if (loginUser != null)
                 _userType = loginUser.UserType;
             else
@@ -48,7 +49,7 @@ namespace AttendanceSystem.Manager
             {
                 Console.Write("\nCreate:\n ");
                 Console.Write("1.Teacher 2.Student 3.Course 4.Admin\nOption No.: ");
-                _userChoice = Byte.Parse(Console.ReadLine().Trim());
+                _userChoice = Convert.ToByte(Console.ReadLine());
             }
             catch (Exception ex)
             {
@@ -58,7 +59,7 @@ namespace AttendanceSystem.Manager
 
             if (_userChoice == 0)
             {
-                new Program();
+                Program program = new ();
             }
             else if (_userChoice == 1)
             {
@@ -67,7 +68,7 @@ namespace AttendanceSystem.Manager
 
                 RedirectToTeacher:
                 _userName = AppHelper.SetUserName();
-                var isExist = dbContext.Users.Any(u => u.UserName == _userName);
+                var isExist = _dbContext.Users.Any(u => u.UserName == _userName);
                 if (isExist)
                 {
                     AppHelper.MessageInfo("This Username Already Exist.\n");
@@ -81,8 +82,8 @@ namespace AttendanceSystem.Manager
                         RegisterDate = DateTime.Now
                     };
 
-                    dbContext.Users.Add(teacher);
-                    _rowAffected = dbContext.SaveChanges();
+                    _dbContext.Users.Add(teacher);
+                    _rowAffected = _dbContext.SaveChanges();
                     if (_rowAffected > 0)
                         AppHelper.SuccessInfo($"Success! {teacher.UserType} Registration.");
                     else
@@ -99,7 +100,7 @@ namespace AttendanceSystem.Manager
 
                 RedirectToStudent:
                 _userName = AppHelper.SetUserName();
-                var isExist = dbContext.Users.Any(x => x.UserName == _userName);
+                var isExist = _dbContext.Users.Any(x => x.UserName == _userName);
                 if (isExist)
                 {
                     AppHelper.MessageInfo("This Username Already Exist.\n");
@@ -113,8 +114,8 @@ namespace AttendanceSystem.Manager
                         RegisterDate = DateTime.Now
                     };
 
-                    dbContext.Users.Add(student);
-                    _rowAffected = dbContext.SaveChanges();
+                    _dbContext.Users.Add(student);
+                    _rowAffected = _dbContext.SaveChanges();
                     if (_rowAffected > 0)
                         AppHelper.SuccessInfo($"Success! {student.UserType} Registration.");
                     else
@@ -130,7 +131,7 @@ namespace AttendanceSystem.Manager
                 var course = new Course();
                 Console.Write("\nCourse ");
                 course.CourseName = AppHelper.SetName();
-                var isTrue = dbContext.Courses.Any(x => x.CourseName == course.CourseName);
+                var isTrue = _dbContext.Courses.Any(x => x.CourseName == course.CourseName);
                 if (isTrue)
                 {
                     AppHelper.MessageInfo("Already Exist This Course Title.");
@@ -142,8 +143,8 @@ namespace AttendanceSystem.Manager
                     course.CreationDate = DateTime.Now.ToString("G");
                     try
                     {
-                        dbContext.Courses.Add(course);
-                        _rowAffected = dbContext.SaveChanges();
+                        _dbContext.Courses.Add(course);
+                        _rowAffected = _dbContext.SaveChanges();
                         if (_rowAffected > 0)
                             AppHelper.SuccessInfo("Success! To Create New Course.");
                         else
@@ -162,7 +163,7 @@ namespace AttendanceSystem.Manager
 
                 RedirectToAdmin:
                 _userName = AppHelper.SetUserName();
-                var adminExist = dbContext.Users.Any(x => x.UserName == _userName);
+                var adminExist = _dbContext.Users.Any(x => x.UserName == _userName);
                 if (adminExist)
                 {
                     AppHelper.MessageInfo("This Username Already Exist.\n");
@@ -176,8 +177,8 @@ namespace AttendanceSystem.Manager
                         RegisterDate = DateTime.Now
                     };
 
-                    dbContext.Users.Add(_admin);
-                    _rowAffected = dbContext.SaveChanges();
+                    _dbContext.Users.Add(_admin);
+                    _rowAffected = _dbContext.SaveChanges();
                     if (_rowAffected > 0)
                         AppHelper.SuccessInfo($"Success! {_admin.UserType} Registration.\n");
                     else
@@ -198,7 +199,7 @@ namespace AttendanceSystem.Manager
         {
             StartAgain:
             Console.WriteLine("\nCourse List=>");
-            List<Course> courses = dbContext.Courses.ToList();
+            List<Course> courses = _dbContext.Courses.ToList();
             if (courses.Count > 0)
                 foreach (var c in courses)
                     Console.WriteLine($"Course Title: {c.CourseName}");
@@ -239,12 +240,12 @@ namespace AttendanceSystem.Manager
                     Console.Write("Total Classes: ");
                     selectCourse.TotalClass = ushort.Parse(Console.ReadLine());
                     selectCourse.HasSchedule = Convert.ToBoolean(bool.TrueString);
-                    dbContext.Courses.Update(selectCourse);  // UpdateDataToDbRow
+                    _dbContext.Courses.Update(selectCourse);  // UpdateDataToDbRow
                 }
                 catch (Exception ex) { AppHelper.InvalidInfo($"{ex.Message}\n"); goto SetScheduleAgain; }
             }
 
-            _rowAffected = dbContext.SaveChanges();
+            _rowAffected = _dbContext.SaveChanges();
             if (_rowAffected > 0)
             {
                 AppHelper.SuccessInfo("Success! Class Schedule for Course.");
@@ -259,7 +260,7 @@ namespace AttendanceSystem.Manager
         public void GetStudentAttendance()
         {
 
-            var loginUser = dbContext.Users
+            var loginUser = _dbContext.Users
                 .Where(t => t.UserName == _userName && t.Password == _password).Include(s => s.Course).SingleOrDefault();
 
 
@@ -288,7 +289,7 @@ namespace AttendanceSystem.Manager
                     if (DateTimeOf1stClassDay || DateTimeOf2ndClassDay)
                     {
 
-                        var attendee = dbContext.Attendances
+                        var attendee = _dbContext.Attendances
                             .Where(x => x.Student == loginUser && x.Course == loginUser.Course && x.ClassDate == DateTime.Now.Date)
                             .SingleOrDefault();
 
@@ -303,9 +304,9 @@ namespace AttendanceSystem.Manager
                             {
                                 attendee.IsPresent = true;
                                 attendee.PresentDate = DateTime.Now;
-                                dbContext.Attendances.Update(attendee);
+                                _dbContext.Attendances.Update(attendee);
 
-                                _rowAffected = dbContext.SaveChanges();
+                                _rowAffected = _dbContext.SaveChanges();
                                 if (_rowAffected > 0)
                                     AppHelper.SuccessInfo("Success! Accepted your attendance.");
                                 else
@@ -333,7 +334,7 @@ namespace AttendanceSystem.Manager
         public void SetStudentAttendance()
         {
 
-            var loginUser = dbContext.Users
+            var loginUser = _dbContext.Users
                 .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
@@ -351,13 +352,13 @@ namespace AttendanceSystem.Manager
                         $"{loginUser.Course.Weekly2ndClassDay} ({loginUser.Course.ClassStartTime2} - {loginUser.Course.ClassEndedTime2})");
 
 
-                    List<EntityUser> students = dbContext.Users
+                    List<EntityUser> students = _dbContext.Users
                         .Where(x => x.Course == loginUser.Course && x.UserType == UserType.Student).ToList();
 
                     foreach (var student in students)
                     {
 
-                        var isSchedule = dbContext.Attendances.
+                        var isSchedule = _dbContext.Attendances.
                             Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
 
 
@@ -388,15 +389,15 @@ namespace AttendanceSystem.Manager
 
                             setSchedule.CreationDate = DateTime.Now;
                             setSchedule.ClassDate = DateTime.Now.Date;
-                            dbContext.Attendances.Add(setSchedule);
-                            _rowAffected = dbContext.SaveChanges();
+                            _dbContext.Attendances.Add(setSchedule);
+                            _rowAffected = _dbContext.SaveChanges();
                         }
                     }
 
                     if (_rowAffected > 0)
                         AppHelper.SuccessInfo("Success! Attendance schedule setting.");
 
-                    var attendances = dbContext.Attendances.Where(x => x.Course == loginUser.Course).Include(s => s.Student).ToList();
+                    var attendances = _dbContext.Attendances.Where(x => x.Course == loginUser.Course).Include(s => s.Student).ToList();
                     if (attendances.Count > 0)
                     {
                         AppHelper.MessageInfo("\nClass-Date\tStudent-Name\tPresent?");
@@ -426,16 +427,16 @@ namespace AttendanceSystem.Manager
         public void ViewAttendanceOfCourses()
         {
 
-            var loginUser = dbContext.Users
+            var loginUser = _dbContext.Users
                 .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
 
 
             Console.WriteLine("\nCourse List=>");
             List<Course> courses = null;
             if (loginUser.Course == null)
-                courses = dbContext.Courses.ToList();
+                courses = _dbContext.Courses.ToList();
             else
-                courses = dbContext.Courses.Where(u => u.CourseName != loginUser.Course.CourseName).ToList();
+                courses = _dbContext.Courses.Where(u => u.CourseName != loginUser.Course.CourseName).ToList();
 
 
             if (courses.Count > 0)
@@ -452,7 +453,7 @@ namespace AttendanceSystem.Manager
             var selectCourse = courses.FirstOrDefault(x => x.CourseName == courseName);
             if (selectCourse != null)
             {
-                List<Attendance> attendances = dbContext.Attendances
+                List<Attendance> attendances = _dbContext.Attendances
                     .Where(x => x.Course == selectCourse).Include(s => s.Student).ToList();
 
                 if (attendances.Count > 0)
@@ -488,7 +489,7 @@ namespace AttendanceSystem.Manager
 
             AfterCreateNewCourse:
             Console.WriteLine("\nCourse List=> ");
-            List<Course> courses = dbContext.Courses.ToList();
+            List<Course> courses = _dbContext.Courses.ToList();
             if (courses.Count > 0)
             {
                 foreach (var course in courses)
@@ -506,7 +507,7 @@ namespace AttendanceSystem.Manager
             {
                 SelectTeacherAgain:
                 Console.WriteLine("\nTeacher List=>");
-                List<EntityUser> teachers = dbContext.Users.Where(t => t.UserType == UserType.Teacher && t.Course == null).ToList();
+                List<EntityUser> teachers = _dbContext.Users.Where(t => t.UserType == UserType.Teacher && t.Course == null).ToList();
 
                 if (teachers.Count > 0)
                 {
@@ -528,7 +529,7 @@ namespace AttendanceSystem.Manager
             {
                 SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
-                List<EntityUser> students = dbContext.Users.Where(s => s.UserType == UserType.Student && s.Course == null).ToList();
+                List<EntityUser> students = _dbContext.Users.Where(s => s.UserType == UserType.Student && s.Course == null).ToList();
 
                 if (students.Count > 0)
                 {
@@ -556,8 +557,8 @@ namespace AttendanceSystem.Manager
                 {
                     user.Course = selectCourse;
                     user.EnrollmentDate = Convert.ToString(DateTime.Now);
-                    dbContext.Users.Update(user);
-                    _rowAffected = dbContext.SaveChanges();
+                    _dbContext.Users.Update(user);
+                    _rowAffected = _dbContext.SaveChanges();
                 }
                 else
                 {
