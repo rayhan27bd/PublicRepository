@@ -70,8 +70,8 @@ public class Program
             // view attendance assigned course
             appManager.SetStudentAttendance();
 
-        ViewAttendance: // view attendance of another courses
-            Console.Write("\nDo you want to view attendance another courses?? \n[Y/N]: ");
+            ViewAttendance: // view attendance of another courses
+            Console.Write("\nDo you want to view attendance another courses??\n[Y/N]: ");
             ConsoleKey yesOrNo = Console.ReadKey().Key; Console.Write("\n");
             if (yesOrNo == ConsoleKey.Y)
             {
@@ -82,42 +82,8 @@ public class Program
                 AppHelper.InvalidInfo("Invalid Attempt! Please try again..");
                 goto ViewAttendance;
             }
-
-            /*
-            GotoAgain:
-            byte teacherChoice;
-            Console.Write("\nView Attendance:-");
-            Console.Write("\n 1.Assigned Course??\n");
-            Console.Write(" 2.Another Courses??\nOption No.: ");
-
-            try
-            {
-                teacherChoice = Byte.Parse(Console.ReadLine());
-            }
-            catch (Exception ex)
-            {
-                AppHelper.InvalidInfo($"{ex.Message}\nPlease try again..");
-                goto GotoAgain;
-            }
-
-            switch (teacherChoice)
-            {
-                case 0:
-                    AppHelper.SuccessInfo("Success! Teacher Logout.");
-                    break;
-                case 1:
-                    appManager.SetStudentAttendance(); 
-                    goto GotoAgain;
-                case 2:
-                    appManager.ViewAttendanceOfCourses();
-                    goto GotoAgain;
-                default:
-                    AppHelper.InvalidInfo("Invalid! Input Option No. Incorrect.");
-                    goto GotoAgain;
-            }
-            */
-
-            Console.ReadKey();  // Hold Dispplay
         }
+
+        Console.ReadKey();  // Hold Dispplay
     }
 }
