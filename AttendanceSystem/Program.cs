@@ -16,14 +16,14 @@ public class Program
         if (userType == UserType.Admin)
         {
             StartAgain:
-            byte userChoice;
+            int userChoice;
             Console.Write("\n1.Create User or Course??\n2.Assign Teacher Course??");
             Console.Write("\n3.Enroll Student Course??\n4.Layout Class Schedule??");
             Console.Write("\n0.Logout\nOption No.: ");
 
             try
             {
-                userChoice = Convert.ToByte(Console.ReadLine());
+                userChoice = Convert.ToInt32(Console.ReadLine());
             }
             catch (Exception ex)
             {
