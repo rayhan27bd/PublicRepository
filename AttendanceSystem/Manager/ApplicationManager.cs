@@ -542,7 +542,7 @@ namespace AttendanceSystem.Manager
                 }
                 else
                 {
-                    AppHelper.MessageInfo("No Unassign Student Found, Please add new Student.");
+                    AppHelper.MessageInfo("Unassign Student Not Found, Please Add New Student.");
                     CreateUserOrCourse(); goto SelectStudentAgain;
                 }
             }

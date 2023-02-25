@@ -117,8 +117,7 @@ public class Program
             }
             */
 
+            Console.ReadKey();  // Hold Dispplay
         }
-
-        Console.ReadKey();  // Hold Dispplay
     }
 }
