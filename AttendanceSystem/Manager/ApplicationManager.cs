@@ -2,7 +2,6 @@
 using AttendanceSystem.Utility;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace AttendanceSystem.Manager
 {
