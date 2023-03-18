@@ -18,7 +18,7 @@ public class Program
             StartAgain:
             int userChoice;
             Console.Write("\n1.Create User or Course??\n2.Assign Teacher Course??");
-            Console.Write("\n3.Enroll Student Course??\n4.Layout Class Schedule??");
+            Console.Write("\n3.Enroll Student Course??\n4.Set-up Class Schedule??");
             Console.Write("\n0.Logout\nOption No.: ");
 
             try
