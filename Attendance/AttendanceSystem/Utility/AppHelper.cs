@@ -55,12 +55,12 @@ namespace AttendanceSystem.Utility
                 AppHelper.InvalidInfo("Username length tobe min five.");
                 goto TryAgain;
             }
-            if (_userName.Contains(' '))
+            else if (_userName.Contains(' '))
             {
                 AppHelper.InvalidInfo("Username can't contains space.");
                 goto TryAgain;
             }
-            if (_userName != _userName.ToLower())
+            else if (_userName != _userName.ToLower())
             {
                 AppHelper.InvalidInfo("Username to be lowercase Only.");
                 goto TryAgain;
@@ -80,8 +80,7 @@ namespace AttendanceSystem.Utility
                     AppHelper.InvalidInfo("Password length tobe min five.");
                     goto SetPasswordAgain;
                 }
-
-                if (_password.Contains(' '))
+                else if (_password.Contains(' '))
                 {
                     AppHelper.InvalidInfo("Password can't contains space.");
                     goto SetPasswordAgain;

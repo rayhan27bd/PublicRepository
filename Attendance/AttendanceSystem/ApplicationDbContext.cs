@@ -1,26 +1,29 @@
 ﻿using System.Reflection;
+using System.Configuration;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols;
 
 namespace AttendanceSystem
 {
     public class ApplicationDbContext : DbContext
     {
         private readonly string _connectionString;
-        private readonly string? migrationsAssembly;
+        private readonly string _migrationAssembly;
+
+        private readonly string connectionString =
+            ConfigurationManager.ConnectionStrings["AttendanceSystem"].ConnectionString;
 
         public ApplicationDbContext()
         {
-            _connectionString = "Server=.\\SQLEXPRESS; Database=AttendanceSystem; Integrated Security=true; Trusted_Connection=True;";
-            migrationsAssembly = Assembly.GetExecutingAssembly().GetName().Name;
+            _connectionString = connectionString;
+            _migrationAssembly = Assembly.GetExecutingAssembly().GetName().Name;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(_connectionString, (x) => x.MigrationsAssembly(migrationsAssembly));
-
-            base.OnConfiguring(optionsBuilder);
+                optionsBuilder.UseSqlServer(_connectionString, (x) => x.MigrationsAssembly(_migrationAssembly));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +49,5 @@ namespace AttendanceSystem
         public DbSet<Course> Courses { get; set; }
         public DbSet<EntityUser> Users { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-
     }
 }
