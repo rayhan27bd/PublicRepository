@@ -7,7 +7,6 @@ namespace AttendanceSystem.Manager
 {
     public class ApplicationManager
     {
-
         private static string _name;
         private static int _userChoice;
         private static string _userName;
@@ -334,7 +333,8 @@ namespace AttendanceSystem.Manager
         {
 
             var loginUser = _db.Users
-                .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
+                .Where(t => t.UserName == _userName && t.Password == _password)
+                .Include(c => c.Course).SingleOrDefault();
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
             Console.WriteLine($"Course Title: {((loginUser.Course != null) ? loginUser.Course.CourseName : "N/A")}");
@@ -376,13 +376,13 @@ namespace AttendanceSystem.Manager
                             var setSchedule = new Attendance() { Student = student, Course = student.Course };
                             if (_1stClassDayTime)
                             {
-                                setSchedule.ClassWeekOfDay = $"{student.Course.Weekly1stClassDay}";
+                                setSchedule.ClassDayOfWeek = $"{student.Course.Weekly1stClassDay}";
                                 setSchedule.ClassStartEndTime = $"{student.Course.ClassStartTime1} - {Convert.ToDateTime(student.Course.ClassEndedTime1):t}";
                             }
 
                             if (_2ndClassDayTime)
                             {
-                                setSchedule.ClassWeekOfDay = $"{loginUser.Course.Weekly2ndClassDay}";
+                                setSchedule.ClassDayOfWeek = $"{loginUser.Course.Weekly2ndClassDay}";
                                 setSchedule.ClassStartEndTime = $"{student.Course.ClassStartTime2} - {Convert.ToDateTime(student.Course.ClassEndedTime2):t}";
                             }
 
@@ -575,6 +575,5 @@ namespace AttendanceSystem.Manager
             }
             else { AppHelper.InvalidInfo("Info! Selected Username isn't Correct."); goto SelectUserAndCourse; }
         }
-
     }
 }

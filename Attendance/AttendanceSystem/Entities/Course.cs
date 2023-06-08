@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace AttendanceSystem.Entities
+﻿namespace AttendanceSystem.Entities
 {
     public sealed class Course
     {
@@ -18,8 +15,7 @@ namespace AttendanceSystem.Entities
         public string? ClassStartTime2 { get; set; }
         public string? ClassEndedTime2 { get; set; }
 
-        public ushort TotalClass { get; set; }
+        public int TotalClass { get; set; }
         public Boolean HasSchedule { get; set; }
-
     }
 }

@@ -66,7 +66,7 @@ namespace AttendanceSystem.Migrations
                     CourseId = table.Column<long>(type: "bigint", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     ClassDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ClassWeekOfDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassDayOfWeek = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClassStartEndTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PresentDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     IsPresent = table.Column<bool>(type: "bit", nullable: false)

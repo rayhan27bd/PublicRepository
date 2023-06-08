@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Xml.Linq;
-
-namespace AttendanceSystem.Entities
+﻿namespace AttendanceSystem.Entities
 {
     public class EntityUser
     {

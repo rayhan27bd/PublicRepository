@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-
-namespace AttendanceSystem.Entities
+﻿namespace AttendanceSystem.Entities
 {
     public enum UserType
     {
