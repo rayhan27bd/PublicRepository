@@ -257,19 +257,17 @@ namespace AttendanceSystem.Manager
 
         public void GetStudentAttendance()
         {
-
             var loginUser = _db.Users
-                .Where(t => t.UserName == _userName && t.Password == _password).Include(s => s.Course).SingleOrDefault();
-
+                .Where(t => t.UserName == _userName && t.Password == _password)
+                .Include(s => s.Course).SingleOrDefault();
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
+
             if (loginUser.Course != null && loginUser.UserType == UserType.Student)
             {
-
                 Console.WriteLine($"Course Title: {loginUser.Course.CourseName}");
                 if (loginUser.Course.HasSchedule == true)
                 {
-
                     Console.WriteLine($"Class Schedule: " +
                         $"{loginUser.Course.Weekly1stClassDay} ({loginUser.Course.ClassStartTime1} - {loginUser.Course.ClassEndedTime1}), " +
                         $"{loginUser.Course.Weekly2ndClassDay} ({loginUser.Course.ClassStartTime2} - {loginUser.Course.ClassEndedTime2})");
@@ -286,14 +284,12 @@ namespace AttendanceSystem.Manager
 
                     if (DateTimeOf1stClassDay || DateTimeOf2ndClassDay)
                     {
-
                         var attendee = _db.Attendances
                             .Where(x => x.Student == loginUser && x.Course == loginUser.Course && x.ClassDate == DateTime.Now.Date)
                             .SingleOrDefault();
 
                         if (attendee != null)
                         {
-
                             TakeAttendance:
                             Console.Write($"\nDo you want to given attendance?? \n[Y/N]: ");
                             ConsoleKey yesOrNo = Console.ReadKey().Key; Console.Write("\n");
