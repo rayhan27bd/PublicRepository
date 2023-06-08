@@ -83,7 +83,5 @@ public class Program
                 goto ViewAttendance;
             }
         }
-
-        Console.ReadKey();  // Hold Dispplay
     }
 }
