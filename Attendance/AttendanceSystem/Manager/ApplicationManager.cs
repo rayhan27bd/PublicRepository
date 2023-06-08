@@ -327,7 +327,6 @@ namespace AttendanceSystem.Manager
 
         public void SetStudentAttendance()
         {
-
             var loginUser = _db.Users
                 .Where(t => t.UserName == _userName && t.Password == _password)
                 .Include(c => c.Course).SingleOrDefault();
@@ -338,10 +337,8 @@ namespace AttendanceSystem.Manager
 
             if (loginUser.Course != null && loginUser.UserType == UserType.Teacher)
             {
-
                 if (loginUser.Course.HasSchedule == true)
                 {
-
                     Console.WriteLine($"Class Schedule: " +
                         $"{loginUser.Course.Weekly1stClassDay} ({loginUser.Course.ClassStartTime1} - {loginUser.Course.ClassEndedTime1}), " +
                         $"{loginUser.Course.Weekly2ndClassDay} ({loginUser.Course.ClassStartTime2} - {loginUser.Course.ClassEndedTime2})");
@@ -352,7 +349,6 @@ namespace AttendanceSystem.Manager
 
                     foreach (var student in students)
                     {
-
                         var isSchedule = _db.Attendances.
                             Any(x => x.Student == student && x.Course == student.Course && x.ClassDate == DateTime.Now.Date);
 
@@ -368,7 +364,6 @@ namespace AttendanceSystem.Manager
 
                         if (isSchedule == false && (_1stClassDayTime || _2ndClassDayTime))
                         {
-
                             var setSchedule = new Attendance() { Student = student, Course = student.Course };
                             if (_1stClassDayTime)
                             {
@@ -421,18 +416,17 @@ namespace AttendanceSystem.Manager
 
         public void ViewAttendanceOfCourses()
         {
-
             var loginUser = _db.Users
-                .Where(t => t.UserName == _userName && t.Password == _password).Include(c => c.Course).SingleOrDefault();
-
+                .Where(t => t.UserName == _userName && t.Password == _password)
+                .Include(c => c.Course).SingleOrDefault();
 
             Console.WriteLine("\nCourse List=>");
             List<Course> courses = null;
             if (loginUser.Course == null)
                 courses = _db.Courses.ToList();
             else
-                courses = _db.Courses.Where(u => u.CourseName != loginUser.Course.CourseName).ToList();
-
+                courses = _db.Courses
+                    .Where(u => u.CourseName != loginUser.Course.CourseName).ToList();
 
             if (courses.Count > 0)
             {
@@ -440,8 +434,7 @@ namespace AttendanceSystem.Manager
                 foreach (var c in courses)
                     Console.WriteLine($"{index++}. {c.CourseName}");
             }
-            //else { AppHelper.InvalidInfo("Info! Course Not Found."); }
-
+            else { AppHelper.InvalidInfo("Info! No Course Found"); }
 
             SelectCourseAgain:
             Console.Write("Select Course: "); var courseName = Console.ReadLine();
@@ -481,7 +474,6 @@ namespace AttendanceSystem.Manager
 
         public void AssignOrEnrollCourse(int userType)
         {
-
             AfterCreateNewCourse:
             Console.WriteLine("\nCourse List=> ");
             List<Course> courses = _db.Courses.ToList();
@@ -519,8 +511,7 @@ namespace AttendanceSystem.Manager
                     CreateUserOrCourse(); goto SelectTeacherAgain;
                 }
             }
-
-            if (userType == 3)
+            else if (userType == 3)
             {
                 SelectStudentAgain:
                 Console.WriteLine("\nStudent List=>");
@@ -541,8 +532,7 @@ namespace AttendanceSystem.Manager
                     CreateUserOrCourse(); goto SelectStudentAgain;
                 }
             }
-
-            if (user != null && user.UserName == _userName)
+            else if (user != null && user.UserName == _userName)
             {
                 SelectCourseAgain:
                 Console.Write("Enter Course");
@@ -569,7 +559,11 @@ namespace AttendanceSystem.Manager
                     Console.WriteLine(); goto SelectCourseAgain;
                 }
             }
-            else { AppHelper.InvalidInfo("Info! Selected Username isn't Correct."); goto SelectUserAndCourse; }
+            else 
+            { 
+                AppHelper.InvalidInfo("Info! Selected Username isn't Correct."); 
+                goto SelectUserAndCourse; 
+            }
         }
     }
 }
