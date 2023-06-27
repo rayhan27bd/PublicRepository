@@ -200,9 +200,12 @@ namespace AttendanceSystem.Manager
             StartAgain:
             Console.WriteLine("\nCourse List=>");
             List<Course> courses = _db.Courses.ToList();
+
             if (courses.Count > 0)
+            {
                 foreach (var c in courses)
                     Console.WriteLine($"Course Title: {c.CourseName}");
+            }
             else
             {
                 AppHelper.MessageInfo("No Course Found, Please add a Course.");
@@ -336,7 +339,6 @@ namespace AttendanceSystem.Manager
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
             Console.WriteLine($"Course Title: {(loginUser.Course != null ? loginUser.Course.CourseName : "N/A")}");
 
-
             if (loginUser.Course != null && loginUser.UserType == UserType.Teacher)
             {
                 if (loginUser.Course.HasSchedule == true)
@@ -422,8 +424,9 @@ namespace AttendanceSystem.Manager
                 .Where(t => t.UserName == _userName && t.Password == _password)
                 .Include(c => c.Course).SingleOrDefault();
 
-            Console.WriteLine("\nCourse List=>");
             List<Course> courses = null;
+            Console.WriteLine("\nCourse List=>");
+
             if (loginUser.Course == null)
                 courses = _db.Courses.ToList();
             else
