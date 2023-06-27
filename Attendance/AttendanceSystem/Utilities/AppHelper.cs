@@ -1,10 +1,9 @@
 ﻿using System.Text;
 
-namespace AttendanceSystem.Utility
+namespace AttendanceSystem.Utilities
 {
     public static class AppHelper
     {
-
         private static string _name;
         private static double _fees;
         private static string _userName;
@@ -33,6 +32,7 @@ namespace AttendanceSystem.Utility
 
             return _name;
         }
+
         public static double SetFees()
         {
             Console.Write("Course Fees: ");
@@ -68,6 +68,7 @@ namespace AttendanceSystem.Utility
 
             return _userName;
         }
+
         public static string SetPassword()
         {
             SetPasswordAgain:

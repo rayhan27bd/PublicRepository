@@ -3,15 +3,14 @@ using System.Configuration;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace AttendanceSystem
+namespace AttendanceSystem.Gateway
 {
     public class ApplicationDbContext : DbContext
     {
         private readonly string _connectionString;
         private readonly string _migrationAssembly;
-
         private readonly string connectionString =
-            ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString;
+            ConfigurationManager.ConnectionStrings["Attendance"].ConnectionString;
 
         public ApplicationDbContext()
         {
@@ -22,8 +21,7 @@ namespace AttendanceSystem
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(_connectionString, 
-                    (x) => x.MigrationsAssembly(_migrationAssembly));
+                optionsBuilder.UseSqlServer(_connectionString, (x) => x.MigrationsAssembly(_migrationAssembly));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

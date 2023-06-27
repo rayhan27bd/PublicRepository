@@ -1,7 +1,8 @@
 ﻿using System.Data;
-using AttendanceSystem.Utility;
+using AttendanceSystem.Utilities;
 using AttendanceSystem.Entities;
 using Microsoft.EntityFrameworkCore;
+using AttendanceSystem.Gateway;
 
 namespace AttendanceSystem.Manager
 {
@@ -57,7 +58,7 @@ namespace AttendanceSystem.Manager
 
             if (_userChoice == 0)
             {
-                Program program = new ();
+                Program program = new();
             }
             else if (_userChoice == 1)
             {
@@ -332,7 +333,7 @@ namespace AttendanceSystem.Manager
                 .Include(c => c.Course).SingleOrDefault();
 
             Console.WriteLine($"\n{loginUser.UserType} Name: {loginUser.Name}");
-            Console.WriteLine($"Course Title: {((loginUser.Course != null) ? loginUser.Course.CourseName : "N/A")}");
+            Console.WriteLine($"Course Title: {(loginUser.Course != null ? loginUser.Course.CourseName : "N/A")}");
 
 
             if (loginUser.Course != null && loginUser.UserType == UserType.Teacher)
@@ -552,17 +553,17 @@ namespace AttendanceSystem.Manager
                 }
 
                 if (_rowAffected > 0)
-                    AppHelper.SuccessInfo($"Success! {user.UserType} {((user.UserType == UserType.Teacher) ? "Assigned" : "Enrolled")} Course.");
+                    AppHelper.SuccessInfo($"Success! {user.UserType} {(user.UserType == UserType.Teacher ? "Assigned" : "Enrolled")} Course.");
                 else
                 {
-                    AppHelper.FailureInfo($"Failure! To {user.UserType} {((user.UserType == UserType.Teacher) ? "Assign" : "Enroll")} Course.");
+                    AppHelper.FailureInfo($"Failure! To {user.UserType} {(user.UserType == UserType.Teacher ? "Assign" : "Enroll")} Course.");
                     Console.WriteLine(); goto SelectCourseAgain;
                 }
             }
-            else 
-            { 
-                AppHelper.InvalidInfo("Info! Selected Username isn't Correct."); 
-                goto SelectUserAndCourse; 
+            else
+            {
+                AppHelper.InvalidInfo("Info! Selected Username isn't Correct.");
+                goto SelectUserAndCourse;
             }
         }
     }

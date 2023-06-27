@@ -1,12 +1,11 @@
 ﻿using AttendanceSystem.Manager;
 using AttendanceSystem.Entities;
-using AttendanceSystem.Utility;
+using AttendanceSystem.Utilities;
 
 public class Program
 {
     static void Main(string[] args)
     {
-
         UserType userType;
         var appManager = new ApplicationManager();
         //appManager.CreateUserOrCourse();
