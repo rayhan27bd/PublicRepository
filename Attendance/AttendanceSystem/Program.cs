@@ -58,13 +58,13 @@ public class Program
         }
 
         // Task :: 08
-        if (userType == UserType.Student)
+        else if (userType == UserType.Student)
         {
             appManager.GetStudentAttendance();
         }
 
         // Task :: 09
-        if (userType == UserType.Teacher)
+        else if (userType == UserType.Teacher)
         {
             // view attendance assigned course
             appManager.SetStudentAttendance();
