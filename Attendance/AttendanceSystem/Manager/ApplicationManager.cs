@@ -22,14 +22,15 @@ namespace AttendanceSystem.Manager
             _db = new ApplicationDbContext();
         }
 
-
         public UserType UserLogin()
         {
             LoginAgain:
             _userName = AppHelper.SetUserName();
             _password = AppHelper.SetPassword();
 
-            var loginUser = _db.Users.SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
+            var loginUser = _db.Users
+                .SingleOrDefault(u => u.UserName == _userName && u.Password == _password);
+
             if (loginUser != null)
                 _userType = loginUser.UserType;
             else
